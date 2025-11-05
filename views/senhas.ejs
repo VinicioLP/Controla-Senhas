@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Minhas Senhas</title>
+    <link rel="stylesheet" href="/css/global.css" />
+    <link rel="stylesheet" href="/css/senhas.css" />
+  </head>
+  <body class="with-scroll">
+    <header class="header">
+      <h1>Minhas Senhas</h1>
+      <div class="header-actions">
+        <button id="btnAdicionar" class="btn btn-primary btn-add">
+          Adicionar
+        </button>
+        <button class="btn btn-add" id="gerarSenhaBtn">Gerar Senha</button>
+      </div>
+      <a href="/logout" class="btn btn-secondary">Sair</a>
+    </header>
+    <main class="main-content">
+      <div class="produtos-grid">
+        <% senhas.forEach(senha => { %>
+        <div class="card">
+          <h3><%= senha.descricao %></h3>
+          <input
+            type="password"
+            value="<%= senha.valor %>"
+            readonly
+            style="width: 90%; margin-bottom: 8px"
+          />
+          <div>
+            <button
+              class="btn btn-success"
+              onclick="copiarSenha('<%= senha.valor %>')"
+            >
+              Copiar
+            </button>
+            <button
+              class="btn btn-primary"
+              onclick="abrirEditar('<%= senha.id %>', '<%= senha.descricao %>', '<%= senha.valor %>')"
+            >
+              Editar
+            </button>
+            <a
+              href="/senhas/delete/<%= senha.id %>"
+              class="btn btn-danger"
+              onclick="return confirm('Excluir?')"
+              >Excluir</a
+            >
+          </div>
+        </div>
+        <% }) %>
+      </div>
+    </main>
+
+    <!-- Modal Adicionar -->
+    <div id="modalAdicionar" class="modal">
+      <div class="modal-content">
+        <form action="/senhas/add" method="POST" id="formAdicionar">
+          <h2>Adicionar Senha</h2>
+          <div class="form-group">
+            <label>Descrição:</label>
+            <input type="text" name="descricao" required />
+          </div>
+          <div class="form-group">
+            <label>Senha:</label>
+            <input type="text" name="valor" required />
+          </div>
+          <div class="form-actions">
+            <button type="button" class="btn btn-secondary" id="btnCancelar">
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Editar -->
+    <div id="modalEditar" class="modal">
+      <div class="modal-content">
+        <form method="POST" id="formEditar">
+          <h2>Editar Senha</h2>
+          <div class="form-group">
+            <label>Descrição:</label>
+            <input type="text" name="descricao" id="editDescricao" required />
+          </div>
+          <div class="form-group">
+            <label>Senha:</label>
+            <input type="text" name="valor" id="editValor" required />
+          </div>
+          <div class="form-actions">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              id="btnCancelarEditar"
+            >
+              Cancelar
+            </button>
+            <button type="submit" class="btn btn-success">Salvar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Gerar Senha -->
+    <div id="modalGerarSenha" class="modal">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h2>Senha Gerada</h2>
+          <button class="close" id="fecharGerarSenha">&times;</button>
+        </div>
+        <div style="margin-top: 18px; text-align: center">
+          <input
+            type="text"
+            id="senhaGerada"
+            readonly
+            style="
+              width: 90%;
+              font-size: 18px;
+              text-align: center;
+              letter-spacing: 2px;
+            "
+          />
+          <div style="margin-top: 18px">
+            <button class="btn btn-success" id="copiarSenhaGerada">
+              Copiar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Modal Adicionar
+      const modalAdicionar = document.getElementById("modalAdicionar");
+      const btnAdicionar = document.getElementById("btnAdicionar");
+      const btnCancelar = document.getElementById("btnCancelar");
+      btnAdicionar.addEventListener("click", function () {
+        modalAdicionar.style.display = "flex";
+      });
+
+      btnCancelar.addEventListener("click", function () {
+        modalAdicionar.style.display = "none";
+      });
+
+      // Modal Editar
+      const modalEditar = document.getElementById("modalEditar");
+      const btnCancelarEditar = document.getElementById("btnCancelarEditar");
+      btnCancelarEditar.addEventListener("click", function () {
+        modalEditar.style.display = "none";
+      });
+
+      function abrirEditar(id, descricao, valor) {
+        modalEditar.style.display = "flex";
+        document.getElementById("editDescricao").value = descricao;
+        document.getElementById("editValor").value = valor;
+        document.getElementById("formEditar").action = "/senhas/edit/" + id;
+      }
+
+      // Modal Gerar Senha
+      const modalGerarSenha = document.getElementById("modalGerarSenha");
+      const btnGerarSenha = document.getElementById("gerarSenhaBtn");
+      const fecharGerarSenha = document.getElementById("fecharGerarSenha");
+      const senhaGeradaInput = document.getElementById("senhaGerada");
+      const copiarSenhaGerada = document.getElementById("copiarSenhaGerada");
+
+      btnGerarSenha.addEventListener("click", function () {
+        const length = 12;
+        const charset =
+          "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?";
+        let senha = "";
+        for (let i = 0, n = charset.length; i < length; ++i) {
+          senha += charset.charAt(Math.floor(Math.random() * n));
+        }
+        senhaGeradaInput.value = senha;
+        modalGerarSenha.style.display = "flex";
+      });
+
+      fecharGerarSenha.addEventListener("click", function () {
+        modalGerarSenha.style.display = "none";
+      });
+
+      copiarSenhaGerada.addEventListener("click", function () {
+        navigator.clipboard.writeText(senhaGeradaInput.value);
+        alert("Senha copiada!");
+      });
+
+      // Garante que os modais estejam fechados ao carregar a página
+      window.onload = function () {
+        modalAdicionar.style.display = "none";
+        modalEditar.style.display = "none";
+        modalGerarSenha.style.display = "none";
+      };
+
+      // Copiar senha
+      function copiarSenha(valor) {
+        navigator.clipboard.writeText(valor);
+        alert("Senha copiada!");
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+/* Global resets and targeted scrollbar behavior */
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: #fff;
+}
+
+/* Small touch: ensure modals that use flex are full height */
+.modal,
+.modal-content {
+  -webkit-font-smoothing: antialiased;
+}
+
+/* --- No scroll pages (login / cadastro) --- */
+body.no-scroll {
+  overflow: hidden; /* disable scrolling */
+  height: 100vh;
+}
+
+/* --- Custom scrollbar only for senhas page --- */
+body.with-scroll .main-content {
+  overflow-y: auto;
+  /* reserve space under header (approx) - adjust if header height differs */
+  max-height: calc(100vh - 80px);
+  padding-right: 8px; /* avoid content under scrollbar */
+}
+
+/* Ensure the page itself does not scroll: make body a column flex container so header stays fixed in flow */
+body.with-scroll {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  overflow: hidden; /* prevent page scrolling */
+}
+
+/* Header stays at top; main-content becomes the flexible scrollable area */
+body.with-scroll .header {
+  flex: 0 0 auto;
+}
+
+body.with-scroll .main-content {
+  flex: 1 1 auto;
+  margin: 32px auto;
+  width: calc(100% - 64px);
+  box-sizing: border-box;
+}
+
+/* Webkit (Chromium) custom scrollbar */
+body.with-scroll .main-content::-webkit-scrollbar {
+  width: 10px;
+}
+body.with-scroll .main-content::-webkit-scrollbar-track {
+  background: #232a3a; /* match main-content background */
+  border-radius: 10px;
+}
+body.with-scroll .main-content::-webkit-scrollbar-thumb {
+  background: #4fc3f7; /* accent color */
+  /* round only the right corners: top-right and bottom-right */
+  border-radius: 0 10px 10px 0;
+  border: 2px solid #232a3a; /* blend with track */
+}
+body.with-scroll .main-content::-webkit-scrollbar-thumb:hover {
+  background: #38b0df; /* slightly darker on hover */
+}
+
+/* Firefox scrollbar */
+body.with-scroll .main-content {
+  scrollbar-width: thin;
+  /* thumb color, track color for Firefox */
+  scrollbar-color: #4fc3f7 #232a3a;
+}

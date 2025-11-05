@@ -1,0 +1,63 @@
+{
+  "name": "meuprojeto",
+  "productName": "Controla Senhas",
+  "version": "1.0.0",
+  "description": "",
+  "main": "electron-main.js",
+  "scripts": {
+    "start": "node app.js",
+    "electron:dev": "electron .",
+    "electron:Win": "electron .",
+    "pack:dir": "electron-builder --dir",
+    "dist:win": "electron-builder --win",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:exe": "pkg app.js --targets node18-win-x64 --output \"dist/Controla Senhas.exe\""
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bootstrap": "^5.3.8",
+    "connect-session-sequelize": "^8.0.2",
+    "dotenv": "^17.2.3",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3",
+    "sequelize": "^6.37.7",
+    "sqlite3": "^5.1.7"
+  },
+  "pkg": {
+    "assets": [
+      "views/**/*",
+      "public/**/*",
+      "config/**/*",
+      "routes/**/*",
+      "models/**/*"
+    ]
+  },
+  "build": {
+    "icon": "public/uploads/icon.png",
+    "appId": "com.meuprojeto.app",
+    "files": [
+      "**/*",
+      "!dist/**"
+    ],
+    "asar": true,
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ],
+      "artifactName": "Controla Senhas.${ext}"
+    }
+  },
+  "devDependencies": {
+    "electron": "^39.1.0",
+    "electron-builder": "^26.0.12",
+    "electron-rebuild": "^3.2.9",
+    "pkg": "^5.8.1"
+  }
+}
